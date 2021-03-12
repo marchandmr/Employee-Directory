@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import API from "../../Utils/API";
-import Card from "react-bootstrap/Card"
-import ListGroup from "react-bootstrap/ListGroup"
-import ListGroupItem from "react-bootstrap/ListGroupItem"
+import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
+import "./Main.css"
+
 
 class Main extends Component {
     state = {
-        employees: []
+        employees: [],
+        search: ""
     };
 
 
@@ -14,7 +17,7 @@ class Main extends Component {
     loadEmployee = () => {
         API.Employee()
             .then(res =>
-                this.setState({ employees: [res.data.results] }
+                this.setState({ employees: res.data.results }
                 )
 
             )
@@ -27,43 +30,70 @@ class Main extends Component {
 
     }
 
+    changeSearch = (e) => {
+        this.setState({ search: e.target.value })
+
+    }
 
 
 
+    employeeSearch = () => {
+
+        {
+            this.state.employees.map(({ name }) => {
+                return (name.first.filter(new => name.first.includes(this.state.search.toLowerCase())))
+            }
+            )
+        }
+    }
+
+
+
+    // getSearchResults() {
+    //     const searchedUser = this.state.employees.filter(user => this.state.search.indexOf(user.name.first) > -1 || this.statesearch.indexOf(user.name.last) > -1)
+    //     console.log(searchedUser)
+    //     this.setState({ employees: searchedUser })
+    // }
 
 
 
 
     render() {
 
-        console.log(this.state.employees)
+        // console.log(this.state.employees)
+        console.log(this.state.search)
+
         return (
+
             <div>
-                {/* <Card image={this.state.employees.picture.thumbnail} /> */}
-                <Card style={{ width: '18rem' }}>
-                    <Card.Img variant="top" src={this.state} />
-                    <Card.Body>
-                        <Card.Title>{ }</Card.Title>
-                        <Card.Text>
-                            Some quick example text to build on the card title and make up the bulk of
-                            the card's content.
-    </Card.Text>
-                    </Card.Body>
-                    <ListGroup className="list-group-flush">
-                        <ListGroupItem>Cras justo odio</ListGroupItem>
-                        <ListGroupItem>Dapibus ac facilisis in</ListGroupItem>
-                        <ListGroupItem>Vestibulum at eros</ListGroupItem>
-                    </ListGroup>
-                    <Card.Body>
-                        <Card.Link href="#">Card Link</Card.Link>
-                        <Card.Link href="#">Another Link</Card.Link>
-                    </Card.Body>
-                </Card>
-            </div>
-        )
+                <Row>
+                    <Col> <input className="sort" type="text" value={this.state.search} onChange={this.changeSearch}></input></Col>
+                </Row>
+
+                {this.state.employees.map(({ cell, email, login, location, name, picture }) => {
+
+                    return (
+
+                        < ul >
+                            <Container fluid="md">
+                                <Row key={login.password}>
+                                    <Col key={login.password}>  <img src={picture.large} alt="employee" /></Col>
+                                    <Col > {name.first} {name.last}</Col>
+                                    <Col > {location.country}</Col>
+                                    <Col >{email}</Col>
+                                    <Col >{cell}</Col>
+                                </Row>
+                            </Container>
+                        </ul>
+                    );
+                })
+                }
+
+
+            </div >
+        );
+
     }
 
 }
-
-
 export default Main;
