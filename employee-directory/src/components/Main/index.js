@@ -9,7 +9,8 @@ import "./Main.css"
 class Main extends Component {
     state = {
         employees: [],
-        search: ""
+        search: "",
+        filteredEmployees: []
     };
 
 
@@ -17,8 +18,7 @@ class Main extends Component {
     loadEmployee = () => {
         API.Employee()
             .then(res =>
-                this.setState({ employees: res.data.results }
-                )
+                this.setState({ employees: res.data.results, filteredEmployees: res.data.results })
 
             )
             .catch(err => console.log(err));
@@ -31,31 +31,10 @@ class Main extends Component {
     }
 
     changeSearch = (e) => {
-        this.setState({ search: e.target.value })
-
-    }
-
-
-
-    employeeSearch = () => {
-
-        {
-            this.state.employees.map(({ name }) => {
-                return (name.first.filter(new => name.first.includes(this.state.search.toLowerCase())))
-            }
-            )
-        }
-    }
-
-
-
-    // getSearchResults() {
-    //     const searchedUser = this.state.employees.filter(user => this.state.search.indexOf(user.name.first) > -1 || this.statesearch.indexOf(user.name.last) > -1)
-    //     console.log(searchedUser)
-    //     this.setState({ employees: searchedUser })
-    // }
-
-
+        this.setState({ search: e.target.value }, () => {
+            this.setState({ filteredEmployees: this.state.employees.filter(data => data.name.first.toLowerCase().includes(this.state.search.toLowerCase())) });
+        });
+    };
 
 
     render() {
@@ -70,7 +49,7 @@ class Main extends Component {
                     <Col> <input className="sort" type="text" value={this.state.search} onChange={this.changeSearch}></input></Col>
                 </Row>
 
-                {this.state.employees.map(({ cell, email, login, location, name, picture }) => {
+                {this.state.filteredEmployees.map(({ cell, email, login, location, name, picture }) => {
 
                     return (
 
